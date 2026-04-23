@@ -21,17 +21,6 @@ final class UserControllerTest extends TestCase
 {
     private UserFixture|null $fixture = null;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->mockApplication();
-
-        $this->fixture = new UserFixture(['dataFile' => dirname(__DIR__) . '/support/data/user.php']);
-
-        $this->fixture->load();
-    }
-
     public function testRenderIndexContainsUsersGrid(): void
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -272,6 +261,17 @@ final class UserControllerTest extends TestCase
             $html,
             'Verify email page should embed the user verification token into the confirmation form.',
         );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockApplication();
+
+        $this->fixture = new UserFixture(['dataFile' => __DIR__ . '/support/data/user.php']);
+
+        $this->fixture->load();
     }
 
     protected function tearDown(): void

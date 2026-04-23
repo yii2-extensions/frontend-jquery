@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace app\tests;
 
 use app\widgets\Alert;
-use yii\web\Session;
 use Yii;
+use yii\web\Session;
 
 /**
  * Unit tests for {@see Alert} verifying flash message rendering as Bootstrap 5 alerts.
@@ -16,11 +16,22 @@ use Yii;
  */
 final class AlertTest extends TestCase
 {
-    protected function setUp(): void
+    public function testRenderAppendsOptionsClassWhenProvided(): void
     {
-        parent::setUp();
+        Yii::$app->session->setFlash('info', 'Heads up.');
 
-        $this->mockApplication();
+        $html = Alert::widget(['options' => ['class' => 'custom-class']]);
+
+        self::assertStringContainsString(
+            'custom-class',
+            $html,
+            "Should append the user-supplied 'options.class' to the rendered alert class attribute.",
+        );
+        self::assertStringContainsString(
+            'alert-info',
+            $html,
+            'Should keep the Bootstrap info alert class alongside the appended custom class.',
+        );
     }
 
     public function testRenderEmptyWhenNoFlashes(): void
@@ -28,26 +39,8 @@ final class AlertTest extends TestCase
         $html = Alert::widget();
 
         self::assertEmpty(
-           $html,
-           'Should render empty output when no flash messages are set.',
-        );
-    }
-
-    public function testRenderFlashAsSingleString(): void
-    {
-        Yii::$app->session->setFlash('success', 'Profile saved.');
-
-        $html = Alert::widget();
-
-        self::assertStringContainsString(
-            'alert-success',
             $html,
-            "Should render the Bootstrap success alert class for a 'success' flash.",
-        );
-        self::assertStringContainsString(
-            'Profile saved.',
-            $html,
-            'Should include the flash message body in the rendered output.',
+            'Should render empty output when no flash messages are set.',
         );
     }
 
@@ -74,21 +67,21 @@ final class AlertTest extends TestCase
         );
     }
 
-    public function testRenderAppendsOptionsClassWhenProvided(): void
+    public function testRenderFlashAsSingleString(): void
     {
-        Yii::$app->session->setFlash('info', 'Heads up.');
+        Yii::$app->session->setFlash('success', 'Profile saved.');
 
-        $html = Alert::widget(['options' => ['class' => 'custom-class']]);
+        $html = Alert::widget();
 
         self::assertStringContainsString(
-            'custom-class',
+            'alert-success',
             $html,
-            "Should append the user-supplied 'options.class' to the rendered alert class attribute.",
+            "Should render the Bootstrap success alert class for a 'success' flash.",
         );
         self::assertStringContainsString(
-            'alert-info',
+            'Profile saved.',
             $html,
-            'Should keep the Bootstrap info alert class alongside the appended custom class.',
+            'Should include the flash message body in the rendered output.',
         );
     }
 
@@ -114,6 +107,12 @@ final class AlertTest extends TestCase
         } finally {
             Yii::$app->set('session', $originalSession);
         }
+    }
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockApplication();
     }
 
     protected function tearDown(): void

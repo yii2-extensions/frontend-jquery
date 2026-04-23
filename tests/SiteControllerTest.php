@@ -16,13 +16,6 @@ use Yii;
  */
 final class SiteControllerTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->mockApplication();
-    }
-
     public function testRenderAboutContainsAboutHeading(): void
     {
         $_SERVER['REQUEST_URI'] = '/site/about';
@@ -71,7 +64,6 @@ final class SiteControllerTest extends TestCase
             'name="ContactForm[name]"',
             $html,
             "Should render the contact form with input 'name' bound.",
-
         );
         self::assertStringContainsString(
             'name="ContactForm[email]"',
@@ -138,6 +130,12 @@ final class SiteControllerTest extends TestCase
             $html,
             'Landing page should display the hero heading.',
         );
+    }
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockApplication();
     }
 
     protected function tearDown(): void

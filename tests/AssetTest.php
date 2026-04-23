@@ -17,11 +17,40 @@ use yii\web\{JqueryAsset, View, YiiAsset};
  */
 final class AssetTest extends TestCase
 {
-    protected function setUp(): void
+    public function testAppAssetRegister(): void
     {
-        parent::setUp();
+        $view = Yii::$app->getView();
 
-        $this->mockApplication();
+        self::assertInstanceOf(
+            View::class,
+            $view,
+            "Should be able to retrieve a '\yii\web\View' instance.",
+        );
+        self::assertEmpty(
+            $view->assetBundles,
+            "Should start with no registered asset bundles before 'AppAsset::register()'.",
+        );
+
+        AppAsset::register($view);
+
+        self::assertCount(
+            4,
+            $view->assetBundles,
+            "Should produce '4' bundles in the view.",
+        );
+
+        $result = $view->renderFile(__DIR__ . '/support/views/main.php', ['widget' => '']);
+
+        self::assertStringContainsString(
+            'css/site.css',
+            $result,
+            "Rendered HTML should contain the 'css/site.css' stylesheet declared by 'AppAsset'.",
+        );
+        self::assertStringContainsString(
+            'js/color-mode.js',
+            $result,
+            "Rendered HTML should contain the 'js/color-mode.js' script declared by 'AppAsset'.",
+        );
     }
 
     public function testAppAssetSimpleDependency(): void
@@ -66,40 +95,10 @@ final class AssetTest extends TestCase
             "Should be registered as a transitive dependency through 'YiiAsset'.",
         );
     }
-
-    public function testAppAssetRegister(): void
+    protected function setUp(): void
     {
-        $view = Yii::$app->getView();
+        parent::setUp();
 
-        self::assertInstanceOf(
-            View::class,
-            $view,
-            "Should be able to retrieve a '\yii\web\View' instance.",
-        );
-        self::assertEmpty(
-            $view->assetBundles,
-            "Should start with no registered asset bundles before 'AppAsset::register()'.",
-        );
-
-        AppAsset::register($view);
-
-        self::assertCount(
-            4,
-            $view->assetBundles,
-            "Should produce '4' bundles in the view.",
-        );
-
-        $result = $view->renderFile(__DIR__ . '/../support/views/main.php', ['widget' => '']);
-
-        self::assertStringContainsString(
-            'css/site.css',
-            $result,
-            "Rendered HTML should contain the 'css/site.css' stylesheet declared by 'AppAsset'.",
-        );
-        self::assertStringContainsString(
-            'js/color-mode.js',
-            $result,
-            "Rendered HTML should contain the 'js/color-mode.js' script declared by 'AppAsset'.",
-        );
+        $this->mockApplication();
     }
 }

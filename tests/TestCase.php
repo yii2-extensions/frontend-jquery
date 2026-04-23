@@ -17,11 +17,15 @@ use yii\web\Application;
  */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected function tearDown(): void
+    protected function destroyApplication(): void
     {
-        parent::tearDown();
+        if (Yii::$app !== null) {
+            Yii::$app->getErrorHandler()->unregister();
+        }
 
-        $this->destroyApplication();
+        // @phpstan-ignore assign.propertyType
+        Yii::$app = null;
+        Yii::$container = new Container();
     }
 
     /**
@@ -34,15 +38,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         new Application(ArrayHelper::merge($config, $overrides));
     }
-
-    protected function destroyApplication(): void
+    protected function tearDown(): void
     {
-        if (Yii::$app !== null) {
-            Yii::$app->getErrorHandler()->unregister();
-        }
+        parent::tearDown();
 
-        // @phpstan-ignore assign.propertyType
-        Yii::$app = null;
-        Yii::$container = new Container();
+        $this->destroyApplication();
     }
 }
