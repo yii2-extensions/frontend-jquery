@@ -1,0 +1,20 @@
+{
+    "copy": [
+        "resources",
+        "src",
+        "public/css",
+        "public/js",
+        "config/web.php",
+        "config/params.php",
+        "package.json"
+    ],
+    "modes": {
+        "config/params.php": "preserve",
+        "config/web.php": "replace",
+        "package.json": "preserve",
+        "public/css/**": "replace",
+        "public/js/**": "replace",
+        "resources/views/**": "replace",
+        "src/**": "replace"
+    }
+}

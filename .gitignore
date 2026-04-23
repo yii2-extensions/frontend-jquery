@@ -1,9 +1,3 @@
-# codecoverage (if present)
-code_coverage
-
-# codeception (if present)
-c3.php
-
 # composer
 composer.lock
 
@@ -34,7 +28,8 @@ package-lock.json
 # phpunit (if present)
 .phpunit.cache
 .phpunit.result.cache
-phpunit.xml*
+phpunit.xml
+!phpunit.xml.dist
 
 # vagrant (if present)
 .vagrant
