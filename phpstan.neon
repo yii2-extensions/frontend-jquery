@@ -3,22 +3,26 @@ includes:
 
 parameters:
     bootstrapFiles:
-        - tests/bootstrap.php
+        - tests/_phpstan_bootstrap.php
 
     level: max
 
     paths:
+        - config
         - src
         - tests
 
     tmpDir: %currentWorkingDirectory%/runtime
 
+    yii2:
+        config_path: %currentWorkingDirectory%/config/test.php
+
     # Enable strict advanced checks
-    checkImplicitMixed: true
     checkBenevolentUnionTypes: true
-    checkUninitializedProperties: true
+    checkImplicitMixed: true
     checkMissingCallableSignature: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
     reportAnyTypeWideningInVarTag: true
     reportPossiblyNonexistentConstantArrayOffset: true
     reportPossiblyNonexistentGeneralArrayOffset: true
